@@ -1,9 +1,7 @@
-# API Sismtea de gestión de pedidos de panadería
+# Bakery Order Management System API
+This API allows managing orders. Users can have roles of ADMIN, BAKER, and USER. Users can register, log in, change passwords, and more.
 
-Esta API permite gestionar los pedidos, los usuarios pueden tener roles de ADMIN, PANADERO y USER. Los usuarios pueden registrarse, iniciar sesión, cambiar contraseñas y más.
-
-## Instalación
-
+## Instalación (Pasos en español)
 Para instalar y ejecutar esta API, sigue los siguientes pasos:
 
 1. Clona este repositorio:
@@ -36,7 +34,7 @@ Para instalar y ejecutar esta API, sigue los siguientes pasos:
 Registra un nuevo usuario con los siguientes datos.
 
 #### Ruta
-`POST /usuarios/register`
+`POST /users/register`
 
 #### Cuerpo de la Solicitud
 ```json
