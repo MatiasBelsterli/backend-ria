@@ -29,141 +29,7 @@
         }
       }
     },
-    "/hospitales/": {
-      "get": {
-        "tags": [
-          "Hospitales"
-        ],
-        "summary": "Obtiene la lista de hospitales",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Hospitales"
-        ],
-        "summary": "Agrega un nuevo hospital",
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Add new hospital.",
-            "schema": {
-              "$ref": "#/definitions/Hospital"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ]
-      }
-    },
-    "/hospitales/{id}": {
-      "get": {
-        "tags": [
-          "Hospitales"
-        ],
-        "summary": "Obtiene un hospital por ID",
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "description": "ID del hospital"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Hospitales"
-        ],
-        "summary": "Actualiza un hospital existente",
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "description": "ID del hospital"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Add new user.",
-            "schema": {
-              "$ref": "#/definitions/Hospital"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Hospitales"
-        ],
-        "summary": "Elimina un hospital",
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "description": "ID del hospital"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/usuarios/register": {
+    "/users/register": {
       "post": {
         "tags": [
           "Usuarios"
@@ -187,7 +53,7 @@
         }
       }
     },
-    "/usuarios/login": {
+    "/users/login": {
       "post": {
         "tags": [
           "Usuarios"
@@ -214,7 +80,7 @@
         }
       }
     },
-    "/usuarios/change-password": {
+    "/users/change-password": {
       "post": {
         "tags": [
           "Usuarios"
@@ -241,7 +107,7 @@
         }
       }
     },
-    "/usuarios/forgot-password": {
+    "/users/forgot-password": {
       "post": {
         "tags": [
           "Usuarios"
@@ -268,7 +134,7 @@
         }
       }
     },
-    "/usuarios/enable-user": {
+    "/users/enable-user": {
       "post": {
         "tags": [
           "Usuarios"
@@ -295,7 +161,7 @@
         }
       }
     },
-    "/usuarios/disable-user": {
+    "/users/disable-user": {
       "post": {
         "tags": [
           "Usuarios"
@@ -322,12 +188,12 @@
         }
       }
     },
-    "/productos/": {
+    "/products/": {
       "get": {
         "tags": [
-          "Productos"
+          "Products"
         ],
-        "summary": "Obtiene la lista de productos",
+        "summary": "Gets the list of products",
         "description": "",
         "parameters": [
           {
@@ -350,9 +216,9 @@
       },
       "post": {
         "tags": [
-          "Productos"
+          "Products"
         ],
-        "summary": "Agrega un nuevo producto",
+        "summary": "Adds a new product",
         "description": "",
         "parameters": [
           {
@@ -365,7 +231,7 @@
             "in": "body",
             "description": "Add new product.",
             "schema": {
-              "$ref": "#/definitions/Producto"
+              "$ref": "#/definitions/Product"
             }
           }
         ],
@@ -387,12 +253,12 @@
         ]
       }
     },
-    "/productos/{id}": {
+    "/products/{id}": {
       "get": {
         "tags": [
-          "Productos"
+          "Products"
         ],
-        "summary": "Obtiene un producto por ID",
+        "summary": "Gets a product by ID",
         "description": "",
         "parameters": [
           {
@@ -400,7 +266,7 @@
             "in": "path",
             "required": true,
             "type": "integer",
-            "description": "ID del producto"
+            "description": "Product ID"
           },
           {
             "name": "authorization",
@@ -425,9 +291,9 @@
       },
       "put": {
         "tags": [
-          "Productos"
+          "Products"
         ],
-        "summary": "Actualiza un producto existente",
+        "summary": "Updates an existing product",
         "description": "",
         "parameters": [
           {
@@ -435,7 +301,7 @@
             "in": "path",
             "required": true,
             "type": "integer",
-            "description": "ID del producto"
+            "description": "Product ID"
           },
           {
             "name": "authorization",
@@ -447,7 +313,7 @@
             "in": "body",
             "description": "Update product.",
             "schema": {
-              "$ref": "#/definitions/Producto"
+              "$ref": "#/definitions/Product"
             }
           }
         ],
@@ -473,9 +339,9 @@
       },
       "delete": {
         "tags": [
-          "Productos"
+          "Products"
         ],
-        "summary": "Elimina un producto",
+        "summary": "Deletes a product",
         "description": "",
         "parameters": [
           {
@@ -483,7 +349,7 @@
             "in": "path",
             "required": true,
             "type": "integer",
-            "description": "ID del producto"
+            "description": "Product ID"
           },
           {
             "name": "authorization",
@@ -510,6 +376,194 @@
             "BearerAuth": []
           }
         ]
+      }
+    },
+    "/orders/": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Gets the list of orders",
+        "description": "",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Creates a new order",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "products": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Gets an order by ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Updates an existing order",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "products": {
+                  "example": "any"
+                },
+                "status": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Deletes an order by ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     }
   },
