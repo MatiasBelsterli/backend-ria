@@ -23,15 +23,15 @@ const isAdmin = (req, res, next) => {
     next();
 };
 
-const isPanadero = (req, res, next) => {
-    if (req.userRole !== 'PANADERO' && req.userRole !== 'ADMIN') {
-        return res.status(403).json({ message: 'Requires Panadero Role' });
+const isBaker = (req, res, next) => {
+    if (req.userRole !== 'BAKER' && req.userRole !== 'ADMIN') {
+        return res.status(403).json({ message: 'Requires Baker Role' });
     }
     next();
 };
 
 const isUser = (req, res, next) => {
-    if (req.userRole !== 'ADMIN' && req.userRole !== 'PANADERO' && req.userRole !== 'USER') {
+    if (req.userRole !== 'ADMIN' && req.userRole !== 'BAKER' && req.userRole !== 'USER') {
         return res.status(403).json({ message: 'Requires User Role' });
     }
     next();
@@ -40,6 +40,6 @@ const isUser = (req, res, next) => {
 module.exports = {
     verifyToken,
     isAdmin,
-    isPanadero,
+    isBaker,
     isUser
 };
