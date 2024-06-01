@@ -64,7 +64,6 @@ exports.createOrder = (req, res) => {
     const requesterId = req.userId; // Make sure this is set correctly
 
     const newOrder = new Orders(newOrderId, orderedProducts, requestDate, totalPrice, requesterId);
-    console.log(newOrder);
     orders.push(newOrder);
     res.status(201).json(newOrder);
 };
