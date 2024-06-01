@@ -33,4 +33,10 @@ router.delete('/:id', verifyToken, isAdmin, (req, res) => {
     ordersController.deleteOrder(req, res);
 });
 
+router.patch('/:id/status', verifyToken, isUser, (req, res) => {
+    /* #swagger.summary = 'Changes the status of an order' */
+    /* #swagger.tags = ['Orders'] */
+    ordersController.updateOrderStatus(req, res);
+});
+
 module.exports = router;
