@@ -3,8 +3,8 @@ const Orders = require('../datamodels/models/order');
 const OrderStatus = require('../datamodels/enums/orderStatus');
 
 let orders = [
-    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-01', 20.0, OrderStatus.WAITING, 1),
-    new Orders(2, [{ productId: 2, quantity: 1 }], '2024-06-01', 20.0, OrderStatus.IN_PROCESS, 2)
+    // new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-01', 20.0, OrderStatus.WAITING, 1),
+    // new Orders(2, [{ productId: 2, quantity: 1 }], '2024-06-01', 20.0, OrderStatus.IN_PROCESS, 2)
 ];
 
 exports.getOrders = (req, res) => {
@@ -51,6 +51,59 @@ exports.getOrderById = (req, res) => {
     } else {
         res.status(404).json({ message: 'Order not found' });
     }
+};
+
+exports.getOrdersToBakers = (req, res) => {
+    const ordersToBakers = orders.filter(order => order.status === OrderStatus.WAITING);
+    const ordersWithProducts = ordersToBakers.map(order => {
+        const completeProducts = order.products.map(p => {
+            const product = allProducts.find(prod => prod.id == p.productId);
+            return {
+                ...product,
+                quantity: p.quantity
+            };
+        });
+        return {
+            ...order,
+            products: completeProducts
+        };
+    });
+
+    res.json(ordersWithProducts);
+}
+
+exports.takeOrderToBaker = (req, res) => {
+    const { id } = req.params;
+    const status = req.body.status ?? OrderStatus.IN_PROCESS;
+    const bakerId = req.userId;
+    const orderIndex = orders.findIndex(o => o.id == id);
+    if (orderIndex !== -1) {
+        orders[orderIndex].status = status;
+        orders[orderIndex].bakerId = bakerId;
+        res.json(orders[orderIndex]);
+    } else {
+        res.status(404).json({ message: 'Order not found' });
+    }
+};
+
+exports.getOrdersByBaker = (req, res) => {
+    const bakerId = req.userId;
+    const ordersByBaker = orders.filter(order => order.bakerId === bakerId);
+    const ordersWithProducts = ordersByBaker.map(order => {
+        const completeProducts = order.products.map(p => {
+            const product = allProducts.find(prod => prod.id == p.productId);
+            return {
+                ...product,
+                quantity: p.quantity
+            };
+        });
+        return {
+            ...order,
+            products: completeProducts
+        };
+    });
+
+    res.json(ordersWithProducts);
 };
 
 exports.createOrder = (req, res) => {

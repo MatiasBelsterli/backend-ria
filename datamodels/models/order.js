@@ -8,6 +8,7 @@ class Order {
         this.totalPrice = totalPrice;
         this.status = status;
         this.requesterId = requesterId;
+        this.bakerId = null;
     }
 }
 
