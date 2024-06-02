@@ -64,5 +64,5 @@ const outputFile = './swagger_output.json';
 const endpointsFiles = ['./app.js'];
 
 swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
-  require('./app'); // Tu archivo principal de la aplicación
+  require('./app');
 });
