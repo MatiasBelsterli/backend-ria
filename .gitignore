@@ -82,4 +82,4 @@ yarn.lock
 # Windows files
 Thumbs.db
 
-swagger_output.json
+.swagger_output.json
