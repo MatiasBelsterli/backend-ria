@@ -4,6 +4,7 @@ const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const shoppingCartRoutes = require('./routes/shoppingCartRoutes');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger_output.json');
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use('/users', userRoutes);
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
+app.use('/cart', shoppingCartRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
