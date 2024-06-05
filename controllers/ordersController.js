@@ -3,15 +3,23 @@ const Orders = require('../datamodels/models/order');
 const OrderStatus = require('../datamodels/enums/orderStatus');
 
 let orders = [
-    // new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-01', 20.0, OrderStatus.WAITING, 1),
-    // new Orders(2, [{ productId: 2, quantity: 1 }], '2024-06-01', 20.0, OrderStatus.IN_PROCESS, 2)
+    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-01', 20.0,1 , OrderStatus.WAITING),
+    new Orders(2, [{ productId: 2, quantity: 1 }], '2024-06-01', 20.0, 2, OrderStatus.IN_PROCESS)
 ];
 
 exports.getOrders = (req, res) => {
     const { status } = req.query;
     const requesterId = req.userId;
-    let filteredOrders = orders.filter(order => order.requesterId == requesterId);
+    const userRole = req.userRole
+    let filteredOrders;
+    if (userRole === "ADMIN") {
+        filteredOrders = orders;
+    } else {
+        filteredOrders = orders.filter(order => order.requesterId == requesterId);
+    }
 
+    console.log('las ordenes para el admin', userRole === "ADMIN", 'son:', filteredOrders)
+    console.log('todas las ordenes son:', orders)
     if (status) {
         filteredOrders = filteredOrders.filter(order => order.status == status.toUpperCase());
     }
