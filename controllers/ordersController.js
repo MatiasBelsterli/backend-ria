@@ -18,8 +18,6 @@ exports.getOrders = (req, res) => {
         filteredOrders = orders.filter(order => order.requesterId == requesterId);
     }
 
-    console.log('las ordenes para el admin', userRole === "ADMIN", 'son:', filteredOrders)
-    console.log('todas las ordenes son:', orders)
     if (status) {
         filteredOrders = filteredOrders.filter(order => order.status == status.toUpperCase());
     }
