@@ -10,7 +10,13 @@ let orders = [
 exports.getOrders = (req, res) => {
     const { status } = req.query;
     const requesterId = req.userId;
-    let filteredOrders = orders.filter(order => order.requesterId === requesterId);
+    const userRole = req.userRole
+    let filteredOrders;
+    if (userRole === "ADMIN") {
+        filteredOrders = orders;
+    } else {
+        filteredOrders = orders.filter(order => order.requesterId == requesterId);
+    }
 
     if (status) {
         filteredOrders = filteredOrders.filter(order => order.status === status.toUpperCase());
