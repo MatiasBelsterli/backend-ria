@@ -83,3 +83,5 @@ yarn.lock
 Thumbs.db
 
 .swagger_output.json
+/.idea/backend-ria.iml
+/.idea/modules.xml
