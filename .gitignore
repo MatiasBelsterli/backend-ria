@@ -81,7 +81,7 @@ yarn.lock
 
 # Windows files
 Thumbs.db
-
 .swagger_output.json
+
 /.idea/backend-ria.iml
 /.idea/modules.xml

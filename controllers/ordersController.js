@@ -3,8 +3,8 @@ const Orders = require('../datamodels/models/order');
 const OrderStatus = require('../datamodels/enums/orderStatus');
 
 let orders = [
-    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-01', 20.0,1 , OrderStatus.WAITING),
-    new Orders(2, [{ productId: 2, quantity: 1 }], '2024-06-01', 20.0, 2, OrderStatus.IN_PROCESS)
+    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-01', 20.0, 3, OrderStatus.WAITING),
+    new Orders(2, [{ productId: 2, quantity: 1 }], '2024-06-01', 20.0, 2, OrderStatus.IN_PROCESS )
 ];
 
 exports.getOrders = (req, res) => {
@@ -19,12 +19,12 @@ exports.getOrders = (req, res) => {
     }
 
     if (status) {
-        filteredOrders = filteredOrders.filter(order => order.status == status.toUpperCase());
+        filteredOrders = filteredOrders.filter(order => order.status === status.toUpperCase());
     }
 
     const ordersWithProducts = filteredOrders.map(order => {
         const completeProducts = order.products.map(p => {
-            const product = allProducts.find(prod => prod.id == p.productId);
+            const product = allProducts.find(prod => prod.id === p.productId);
             return {
                 ...product,
                 quantity: p.quantity
@@ -41,7 +41,11 @@ exports.getOrders = (req, res) => {
 
 exports.getOrderById = (req, res) => {
     const { id } = req.params;
-    const order = orders.find(o => o.id == id);
+    const numericId = Number(id);
+    if (isNaN(numericId)) {
+        return res.status(400).json({ message: 'Invalid ID, must be a number' });
+    }
+    const order = orders.find(o => o.id === numericId);
     if (order) {
         const completeProducts = order.products.map(p => {
             const product = allProducts.find(prod => prod.id === p.productId);
@@ -63,7 +67,7 @@ exports.getOrdersToBakers = (req, res) => {
     const ordersToBakers = orders.filter(order => order.status === OrderStatus.WAITING);
     const ordersWithProducts = ordersToBakers.map(order => {
         const completeProducts = order.products.map(p => {
-            const product = allProducts.find(prod => prod.id == p.productId);
+            const product = allProducts.find(prod => prod.id === p.productId);
             return {
                 ...product,
                 quantity: p.quantity
@@ -82,7 +86,11 @@ exports.takeOrderToBaker = (req, res) => {
     const { id } = req.params;
     const status = req.body.status ?? OrderStatus.IN_PROCESS;
     const bakerId = req.userId;
-    const orderIndex = orders.findIndex(o => o.id == id);
+    const numericId = Number(id);
+    if (isNaN(numericId)) {
+        return res.status(400).json({ message: 'Invalid ID, must be a number' });
+    }
+    const orderIndex = orders.findIndex(o => o.id === numericId);
     if (orderIndex !== -1) {
         orders[orderIndex].status = status;
         orders[orderIndex].bakerId = bakerId;
@@ -97,7 +105,7 @@ exports.getOrdersByBaker = (req, res) => {
     const ordersByBaker = orders.filter(order => order.bakerId === bakerId);
     const ordersWithProducts = ordersByBaker.map(order => {
         const completeProducts = order.products.map(p => {
-            const product = allProducts.find(prod => prod.id == p.productId);
+            const product = allProducts.find(prod => prod.id === p.productId);
             return {
                 ...product,
                 quantity: p.quantity
@@ -115,9 +123,9 @@ exports.getOrdersByBaker = (req, res) => {
 exports.createOrder = (req, res) => {
     const { products: orderedProducts } = req.body;
     const newOrderId = orders.length ? orders[orders.length - 1].id + 1 : 1;
-    const requestDate = new Date().toISOString();
+    const requestDate = new Date().toISOString()
     const totalPrice = orderedProducts.reduce((total, product) => {
-        const prod = allProducts.find(p => p.id == product.productId);
+        const prod = allProducts.find(p => p.id === product.productId);
         return total + (prod ? prod.price * product.quantity : 0);
     }, 0);
     const requesterId = req.userId; // Make sure this is set correctly
@@ -146,7 +154,11 @@ exports.updateOrder = (req, res) => {
 
 exports.deleteOrder = (req, res) => {
     const { id } = req.params;
-    const orderIndex = orders.findIndex(o => o.id == id);
+    const numericId = Number(id);
+    if (isNaN(numericId)) {
+        return res.status(400).json({ message: 'Invalid ID, must be a number' });
+    }
+    const orderIndex = orders.findIndex(o => o.id === numericId);
     if (orderIndex !== -1) {
         const deletedOrder = orders.splice(orderIndex, 1);
         res.json(deletedOrder);
@@ -158,7 +170,11 @@ exports.deleteOrder = (req, res) => {
 exports.updateOrderStatus = (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
-    const orderIndex = orders.findIndex(o => o.id == id);
+    const numericId = Number(id);
+    if (isNaN(numericId)) {
+        return res.status(400).json({ message: 'Invalid ID, must be a number' });
+    }
+    const orderIndex = orders.findIndex(o => o.id === numericId);
     if (orderIndex !== -1) {
         orders[orderIndex].status = status;
         res.json(orders[orderIndex]);
