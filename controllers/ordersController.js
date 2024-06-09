@@ -121,7 +121,7 @@ exports.getOrdersByBaker = (req, res) => {
 };
 
 exports.createOrder = (req, res) => {
-    const { products: orderedProducts } = req.body;
+    const { products: orderedProducts, deliveryDate } = req.body;
     const newOrderId = orders.length ? orders[orders.length - 1].id + 1 : 1;
     const requestDate = new Date().toISOString()
     const totalPrice = orderedProducts.reduce((total, product) => {
@@ -130,7 +130,7 @@ exports.createOrder = (req, res) => {
     }, 0);
     const requesterId = req.userId; // Make sure this is set correctly
 
-    const newOrder = new Orders(newOrderId, orderedProducts, requestDate, totalPrice, requesterId);
+    const newOrder = new Orders(newOrderId, orderedProducts, requestDate, totalPrice, requesterId, OrderStatus.WAITING, deliveryDate);
     orders.push(newOrder);
     res.status(201).json(newOrder);
 };
