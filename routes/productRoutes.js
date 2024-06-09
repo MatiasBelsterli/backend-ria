@@ -1,7 +1,10 @@
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
 const productsController = require('../controllers/productsController');
 const { verifyToken, isAdmin, isUser } = require('../middleware/auth');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 router.get('/', verifyToken, isUser, (req, res) => {
   /* #swagger.summary = 'Gets the list of products' */
@@ -16,7 +19,7 @@ router.get('/:id', verifyToken, isAdmin, (req, res) => {
   productsController.getProductById(req, res);
 });
 
-router.post('/', verifyToken, isAdmin, (req, res) => {
+router.post('/', verifyToken, isAdmin, upload.single('image'), (req, res) => {
   /* #swagger.summary = 'Adds a new product' */
   /* #swagger.tags = ['Products'] */
   /* #swagger.security = [{ "BearerAuth": [] }] */

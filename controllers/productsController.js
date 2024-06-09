@@ -1,8 +1,8 @@
 const Product = require('../datamodels/models/product');
 
 let products = [
-  new Product(1, 'Product 1', 'Description 1', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...', 10.0),
-  new Product(2, 'Product 2', 'Description 2', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...', 20.0)
+  new Product(1, 'Product 1', 'Description 1', null, 10.0),
+  new Product(2, 'Product 2', 'Description 2', null, 20.0)
 ];
 
 exports.products = products;
@@ -22,8 +22,17 @@ exports.getProductById = (req, res) => {
 };
 
 exports.createProduct = (req, res) => {
-  const { name, description, image, price } = req.body;
-  const newProduct = new Product(products.length ? products[products.length - 1].id + 1 : 1, name, description, image, price);
+  const { name, description, price } = req.body;
+  const image = req.file
+  if (!image) return res.status(400).json({ message: 'Image not found' });
+  const image64 = image.buffer.toString('base64');
+  const newProduct = new Product(
+      products.length ? products[products.length - 1].id + 1 : 1,
+      name,
+      description,
+      image64,
+      price
+  );
   products.push(newProduct);
   res.status(201).json(newProduct);
 };
