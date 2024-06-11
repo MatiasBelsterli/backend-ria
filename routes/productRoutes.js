@@ -31,7 +31,7 @@ router.post('/', verifyToken, isAdmin, upload.single('image'), (req, res) => {
   productsController.createProduct(req, res);
 });
 
-router.put('/:id', verifyToken, isAdmin, (req, res) => {
+router.put('/:id', verifyToken, isAdmin, upload.single('image'), (req, res) => {
   /* #swagger.summary = 'Updates an existing product' */
   /* #swagger.tags = ['Products'] */
   /* #swagger.security = [{ "BearerAuth": [] }] */

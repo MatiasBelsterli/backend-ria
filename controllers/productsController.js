@@ -39,10 +39,16 @@ exports.createProduct = (req, res) => {
 
 exports.updateProduct = (req, res) => {
   const { id } = req.params;
-  const { name, description, image, price } = req.body;
+  const { name, description, price } = req.body;
+  const image = req.file
   const productIndex = products.findIndex(p => p.id == id);
   if (productIndex !== -1) {
-    products[productIndex] = new Product(id, name, description, image, price);
+    if (!image || image === '') {
+      products[productIndex] = new Product(id, name, description, products[productIndex].image, price);
+    } else {
+      const image64 = image.buffer.toString('base64');
+      products[productIndex] = new Product(id, name, description, image64, price);
+    }
     res.json(products[productIndex]);
   } else {
     res.status(404).json({ message: 'Product not found' });
