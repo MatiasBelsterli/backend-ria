@@ -53,6 +53,44 @@
         }
       }
     },
+    "/users/": {
+      "put": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Edita la información de un usuario",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Edición de usuario.",
+            "schema": {
+              "$ref": "#/definitions/EditUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/users/login": {
       "post": {
         "tags": [
@@ -176,6 +214,32 @@
             "schema": {
               "$ref": "#/definitions/EnableDisableUser"
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Obtiene un usuario por ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID del usuario."
           }
         ],
         "responses": {
@@ -431,6 +495,9 @@
               "type": "object",
               "properties": {
                 "products": {
+                  "example": "any"
+                },
+                "deliveryDate": {
                   "example": "any"
                 }
               }

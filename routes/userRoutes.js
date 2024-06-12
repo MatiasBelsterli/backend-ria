@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const usuariosController = require('../controllers/usersController');
+const multer = require("multer");
+const {verifyToken} = require("../middleware/auth");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-router.post('/register', (req, res) => {
+router.post('/register', upload.single('image'), (req, res) => {
   /* #swagger.summary = 'Registra un nuevo usuario' */
   /* #swagger.tags = ['Usuarios'] */
   /* #swagger.parameters['body'] = {
@@ -11,6 +15,17 @@ router.post('/register', (req, res) => {
         schema: { $ref: '#/definitions/RegisterUser' }
     } */
   usuariosController.register(req, res);
+});
+
+router.put('/', verifyToken, upload.single('image'), (req, res) => {
+  /* #swagger.summary = 'Edita la información de un usuario' */
+  /* #swagger.tags = ['Usuarios'] */
+  /* #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Edición de usuario.',
+        schema: { $ref: '#/definitions/EditUser' }
+    } */
+  usuariosController.editUser(req, res);
 });
 
 router.post('/login', (req, res) => {
@@ -66,6 +81,18 @@ router.post('/disable-user', (req, res) => {
         schema: { $ref: '#/definitions/EnableDisableUser' }
     } */
   usuariosController.disableUser(req, res);
+});
+
+router.get('/:id', (req, res) => {
+  /* #swagger.summary = 'Obtiene un usuario por ID' */
+  /* #swagger.tags = ['Usuarios'] */
+  /* #swagger.parameters['id'] = {
+        in: 'path',
+        description: 'ID del usuario.',
+        required: true,
+        type: 'integer'
+    } */
+  usuariosController.getUserById(req, res);
 });
 
 module.exports = router;
