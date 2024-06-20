@@ -4,13 +4,46 @@ const OrderStatus = require('../datamodels/enums/orderStatus');
 
 let orders = [
     new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-01', 20.0, 3, OrderStatus.WAITING),
-    new Orders(2, [{ productId: 2, quantity: 1 }], '2024-06-01', 20.0, 2, OrderStatus.IN_PROCESS )
+    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-02', 30.0, 3, OrderStatus.WAITING),
+    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-03', 50.0, 3, OrderStatus.WAITING),
+    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-04', 10.0, 3, OrderStatus.WAITING),
+    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-05', 17.0, 3, OrderStatus.WAITING),
+    new Orders(2, [{ productId: 2, quantity: 1 }], '2024-06-01', 33.0, 2, OrderStatus.IN_PROCESS )
 ];
+
+const orderOrders = (orders, sortOrder) => {
+    return orders.sort((a, b) => {
+        const dateRequestA = new Date(a.requestDate);
+        const dateRequestB = new Date(b.requestDate);
+        const dateDeliveryA = new Date(a.deliveryDate)
+        const dateDeliveryB = new Date(b.deliveryDate)
+
+        switch (sortOrder) {
+            case 'ascRequest':
+                return dateRequestA - dateRequestB;
+            case 'descRequest':
+                return dateRequestB - dateRequestA;
+            case 'ascDelivery':
+                return dateDeliveryA - dateDeliveryB;
+            case 'descDelivery':
+                return dateDeliveryB - dateDeliveryA;
+            case 'ascPrice':
+                return a.totalPrice - b.totalPrice;
+            case 'descPrice':
+                return b.totalPrice - a.totalPrice;
+            default:
+                return 0;
+        }
+    });
+}
 
 exports.getOrders = (req, res) => {
     const { status } = req.query;
     const requesterId = req.userId;
     const userRole = req.userRole
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const sortOrder = req.query.sortOrder || '';
     let filteredOrders;
     if (userRole === "ADMIN") {
         filteredOrders = orders;
@@ -20,6 +53,10 @@ exports.getOrders = (req, res) => {
 
     if (status) {
         filteredOrders = filteredOrders.filter(order => order.status === status.toUpperCase());
+    }
+
+    if (sortOrder) {
+        filteredOrders = orderOrders(filteredOrders, sortOrder)
     }
 
     const ordersWithProducts = filteredOrders.map(order => {
@@ -36,7 +73,16 @@ exports.getOrders = (req, res) => {
         };
     });
 
-    res.json(ordersWithProducts);
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const resultOrders = ordersWithProducts.slice(startIndex, endIndex)
+    res.json({
+        totalItems: filteredOrders.length,
+        totalPages: Math.ceil(filteredOrders.length / limit),
+        currentPage: page,
+        orders: resultOrders
+    });
 };
 
 exports.getOrderById = (req, res) => {
@@ -64,7 +110,13 @@ exports.getOrderById = (req, res) => {
 };
 
 exports.getOrdersToBakers = (req, res) => {
-    const ordersToBakers = orders.filter(order => order.status === OrderStatus.WAITING);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const sortOrder = req.query.sortOrder || '';
+    let ordersToBakers = orders.filter(order => order.status === OrderStatus.WAITING);
+    if (sortOrder) {
+        ordersToBakers = orderOrders(ordersToBakers, sortOrder)
+    }
     const ordersWithProducts = ordersToBakers.map(order => {
         const completeProducts = order.products.map(p => {
             const product = allProducts.find(prod => prod.id === p.productId);
@@ -78,8 +130,16 @@ exports.getOrdersToBakers = (req, res) => {
             products: completeProducts
         };
     });
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
 
-    res.json(ordersWithProducts);
+    const resultOrders = ordersWithProducts.slice(startIndex, endIndex)
+    res.json({
+        totalItems: ordersToBakers.length,
+        totalPages: Math.ceil(ordersToBakers.length / limit),
+        currentPage: page,
+        orders: resultOrders
+    });
 }
 
 exports.takeOrderToBaker = (req, res) => {
