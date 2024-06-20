@@ -4,11 +4,11 @@ const OrderStatus = require('../datamodels/enums/orderStatus');
 
 let orders = [
     new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-01', 20.0, 3, OrderStatus.WAITING),
-    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-02', 30.0, 3, OrderStatus.WAITING),
-    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-03', 50.0, 3, OrderStatus.WAITING),
-    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-04', 10.0, 3, OrderStatus.WAITING),
-    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-05', 17.0, 3, OrderStatus.WAITING),
-    new Orders(2, [{ productId: 2, quantity: 1 }], '2024-06-01', 33.0, 2, OrderStatus.IN_PROCESS )
+    new Orders(2, [{ productId: 1, quantity: 2 }], '2023-05-02', 30.0, 3, OrderStatus.WAITING),
+    new Orders(3, [{ productId: 1, quantity: 2 }], '2023-05-03', 50.0, 3, OrderStatus.WAITING),
+    new Orders(4, [{ productId: 1, quantity: 2 }], '2023-05-04', 10.0, 3, OrderStatus.WAITING),
+    new Orders(5, [{ productId: 1, quantity: 2 }], '2023-05-05', 17.0, 3, OrderStatus.WAITING),
+    new Orders(6, [{ productId: 2, quantity: 1 }], '2024-06-01', 33.0, 2, OrderStatus.IN_PROCESS )
 ];
 
 const orderOrders = (orders, sortOrder) => {
