@@ -1,8 +1,8 @@
 const Product = require('../datamodels/models/product');
 
 let products = [
-  new Product(1, 'Product 1', 'Description 1', null, 10.0),
-  new Product(2, 'Product 2', 'Description 2', null, 20.0)
+  new Product(1, 'Product 1', 'Description 1', null, 10.0, [{ supplyId: 1, quantity: 500 }]),
+  new Product(2, 'Product 2', 'Description 2', null, 20.0, [{ supplyId: 2, quantity: 200 }])
 ];
 
 exports.products = products;
@@ -79,6 +79,50 @@ exports.deleteProduct = (req, res) => {
   if (productIndex !== -1) {
     const deletedProduct = products.splice(productIndex, 1);
     res.json(deletedProduct);
+  } else {
+    res.status(404).json({ message: 'Product not found' });
+  }
+};
+
+exports.addIngredientToProduct = (req, res) => {
+  const { productId } = req.params;
+  const { supplyId, quantity } = req.body;
+  const product = products.find(p => p.id == productId);
+  const supply = suppliesController.supplies.find(s => s.id == supplyId);
+
+  if (product && supply) {
+    product.ingredients.push({ supplyId, quantity });
+    res.status(201).json(product);
+  } else {
+    res.status(404).json({ message: 'Product or Supply not found' });
+  }
+};
+
+exports.updateIngredientInProduct = (req, res) => {
+  const { productId, supplyId } = req.params;
+  const { quantity } = req.body;
+  const product = products.find(p => p.id == productId);
+
+  if (product) {
+    const ingredient = product.ingredients.find(i => i.supplyId == supplyId);
+    if (ingredient) {
+      ingredient.quantity = quantity;
+      res.json(product);
+    } else {
+      res.status(404).json({ message: 'Ingredient not found in product' });
+    }
+  } else {
+    res.status(404).json({ message: 'Product not found' });
+  }
+};
+
+exports.removeIngredientFromProduct = (req, res) => {
+  const { productId, supplyId } = req.params;
+  const product = products.find(p => p.id == productId);
+
+  if (product) {
+    product.ingredients = product.ingredients.filter(i => i.supplyId != supplyId);
+    res.json(product);
   } else {
     res.status(404).json({ message: 'Product not found' });
   }

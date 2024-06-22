@@ -52,4 +52,40 @@ router.delete('/:id', verifyToken, isAdmin, (req, res) => {
   productsController.deleteProduct(req, res);
 });
 
+router.post('/:productId/ingredients', isAdmin, (req, res) => {
+  /* #swagger.summary = 'Adds an ingredient to a product' */
+  /* #swagger.tags = ['Products'] */
+  /* #swagger.security = [{ "BearerAuth": [] }] */
+  /* #swagger.parameters['productId'] = { description: 'Product ID', type: 'integer', required: true } */
+  /* #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Ingredient information',
+        schema: { $ref: '#/definitions/Ingredient' }
+    } */
+  productsController.addIngredientToProduct(req, res);
+});
+
+router.put('/:productId/ingredients/:supplyId', isAdmin, (req, res) => {
+  /* #swagger.summary = 'Updates an ingredient in a product' */
+  /* #swagger.tags = ['Products'] */
+  /* #swagger.security = [{ "BearerAuth": [] }] */
+  /* #swagger.parameters['productId'] = { description: 'Product ID', type: 'integer', required: true } */
+  /* #swagger.parameters['supplyId'] = { description: 'Supply ID', type: 'integer', required: true } */
+  /* #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Updated ingredient information',
+        schema: { $ref: '#/definitions/Ingredient' }
+    } */
+  productsController.updateIngredientInProduct(req, res);
+});
+
+router.delete('/:productId/ingredients/:supplyId', isAdmin, (req, res) => {
+  /* #swagger.summary = 'Removes an ingredient from a product' */
+  /* #swagger.tags = ['Products'] */
+  /* #swagger.security = [{ "BearerAuth": [] }] */
+  /* #swagger.parameters['productId'] = { description: 'Product ID', type: 'integer', required: true } */
+  /* #swagger.parameters['supplyId'] = { description: 'Supply ID', type: 'integer', required: true } */
+  productsController.removeIngredientFromProduct(req, res);
+});
+
 module.exports = router;
