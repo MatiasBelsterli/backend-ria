@@ -11,39 +11,54 @@ let orders = [
     new Orders(6, [{ productId: 2, quantity: 1 }], '2024-06-01', 33.0, 2, OrderStatus.IN_PROCESS )
 ];
 
-const orderOrders = (orders, sortOrder) => {
+const orderOrders = (orders, sortOrder, sortField) => {
     return orders.sort((a, b) => {
-        const dateRequestA = new Date(a.requestDate);
-        const dateRequestB = new Date(b.requestDate);
-        const dateDeliveryA = new Date(a.deliveryDate)
-        const dateDeliveryB = new Date(b.deliveryDate)
+        let valueA, valueB;
+
+        switch (sortField) {
+            case 'requestDate':
+                valueA = new Date(a.requestDate);
+                valueB = new Date(b.requestDate);
+                break;
+            case 'deliveryDate':
+                valueA = new Date(a.deliveryDate);
+                valueB = new Date(b.deliveryDate);
+                break;
+            case 'totalPrice':
+                valueA = a.totalPrice;
+                valueB = b.totalPrice;
+                break;
+            default:
+                return 0;
+        }
 
         switch (sortOrder) {
             case 'ascRequest':
-                return dateRequestA - dateRequestB;
-            case 'descRequest':
-                return dateRequestB - dateRequestA;
             case 'ascDelivery':
-                return dateDeliveryA - dateDeliveryB;
-            case 'descDelivery':
-                return dateDeliveryB - dateDeliveryA;
             case 'ascPrice':
-                return a.totalPrice - b.totalPrice;
+                return valueA - valueB;
+            case 'descRequest':
+            case 'descDelivery':
             case 'descPrice':
-                return b.totalPrice - a.totalPrice;
+                return valueB - valueA;
             default:
                 return 0;
         }
     });
 }
 
+
 exports.getOrders = (req, res) => {
-    const { status } = req.query;
     const requesterId = req.userId;
-    const userRole = req.userRole
+    const userRole = req.userRole;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const sortOrder = req.query.sortOrder || '';
+
+    const sortRequestDate = req.query.sortRequestDate || '';
+    const sortDeliveryDate = req.query.sortDeliveryDate || '';
+    const sortPrice = req.query.sortPrice || '';
+    const status = req.query.status || '';
+
     let filteredOrders;
     if (userRole === "ADMIN") {
         filteredOrders = orders;
@@ -55,8 +70,14 @@ exports.getOrders = (req, res) => {
         filteredOrders = filteredOrders.filter(order => order.status === status.toUpperCase());
     }
 
-    if (sortOrder) {
-        filteredOrders = orderOrders(filteredOrders, sortOrder)
+    if (sortRequestDate) {
+        filteredOrders = orderOrders(filteredOrders, sortRequestDate, 'requestDate');
+    }
+    if (sortDeliveryDate) {
+        filteredOrders = orderOrders(filteredOrders, sortDeliveryDate, 'deliveryDate');
+    }
+    if (sortPrice) {
+        filteredOrders = orderOrders(filteredOrders, sortPrice, 'totalPrice');
     }
 
     const ordersWithProducts = filteredOrders.map(order => {
@@ -112,10 +133,19 @@ exports.getOrderById = (req, res) => {
 exports.getOrdersToBakers = (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const sortOrder = req.query.sortOrder || '';
+    const sortRequestDate = req.query.sortRequestDate || '';
+    const sortDeliveryDate = req.query.sortDeliveryDate || '';
+    const sortPrice = req.query.sortPrice || '';
+
     let ordersToBakers = orders.filter(order => order.status === OrderStatus.WAITING);
-    if (sortOrder) {
-        ordersToBakers = orderOrders(ordersToBakers, sortOrder)
+    if (sortRequestDate) {
+        ordersToBakers = orderOrders(ordersToBakers, sortRequestDate, 'requestDate');
+    }
+    if (sortDeliveryDate) {
+        ordersToBakers = orderOrders(ordersToBakers, sortDeliveryDate, 'deliveryDate');
+    }
+    if (sortPrice) {
+        ordersToBakers = orderOrders(ordersToBakers, sortPrice, 'totalPrice');
     }
     const ordersWithProducts = ordersToBakers.map(order => {
         const completeProducts = order.products.map(p => {
