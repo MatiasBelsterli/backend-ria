@@ -8,7 +8,25 @@ let supplies = [
 exports.supplies = supplies;
 
 exports.getSupplies = (req, res) => {
-    res.json(supplies);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const searchTerm = req.query.searchTerm?.toLowerCase() || '';
+
+    let filteredSupplies = supplies;
+
+    if (searchTerm) filteredSupplies = filteredSupplies.filter(p => p.name.toLowerCase().includes(searchTerm))
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const resultSupplies = filteredSupplies.slice(startIndex, endIndex);
+
+    res.json({
+        totalItems: supplies.length,
+        totalPages: Math.ceil(supplies.length / limit),
+        currentPage: page,
+        supplies: resultSupplies
+    });
 };
 
 exports.getSupplyById = (req, res) => {
