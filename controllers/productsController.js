@@ -40,8 +40,8 @@ exports.getProductById = (req, res) => {
 };
 
 exports.createProduct = (req, res) => {
-  const { name, description, price } = req.body;
-  const image = req.file
+  const { name, description, price, supplies } = req.body;
+  const image = req.file;
   if (!image) return res.status(400).json({ message: 'Image not found' });
   const image64 = image.buffer.toString('base64');
   const newProduct = new Product(
@@ -49,7 +49,8 @@ exports.createProduct = (req, res) => {
       name,
       description,
       image64,
-      price
+      price,
+      JSON.parse(supplies)
   );
   products.push(newProduct);
   res.status(201).json(newProduct);
@@ -57,15 +58,15 @@ exports.createProduct = (req, res) => {
 
 exports.updateProduct = (req, res) => {
   const { id } = req.params;
-  const { name, description, price } = req.body;
-  const image = req.file
+  const { name, description, price, supplies } = req.body;
+  const image = req.file;
   const productIndex = products.findIndex(p => p.id == id);
   if (productIndex !== -1) {
     if (!image || image === '') {
-      products[productIndex] = new Product(id, name, description, products[productIndex].image, price);
+      products[productIndex] = new Product(id, name, description, products[productIndex].image, price, JSON.parse(supplies));
     } else {
       const image64 = image.buffer.toString('base64');
-      products[productIndex] = new Product(id, name, description, image64, price);
+      products[productIndex] = new Product(id, name, description, image64, price, JSON.parse(supplies));
     }
     res.json(products[productIndex]);
   } else {
@@ -91,7 +92,7 @@ exports.addIngredientToProduct = (req, res) => {
   const supply = suppliesController.supplies.find(s => s.id == supplyId);
 
   if (product && supply) {
-    product.ingredients.push({ supplyId, quantity });
+    product.supplies.push({ supplyId, quantity });
     res.status(201).json(product);
   } else {
     res.status(404).json({ message: 'Product or Supply not found' });
@@ -104,7 +105,7 @@ exports.updateIngredientInProduct = (req, res) => {
   const product = products.find(p => p.id == productId);
 
   if (product) {
-    const ingredient = product.ingredients.find(i => i.supplyId == supplyId);
+    const ingredient = product.supplies.find(i => i.supplyId == supplyId);
     if (ingredient) {
       ingredient.quantity = quantity;
       res.json(product);
@@ -121,7 +122,7 @@ exports.removeIngredientFromProduct = (req, res) => {
   const product = products.find(p => p.id == productId);
 
   if (product) {
-    product.ingredients = product.ingredients.filter(i => i.supplyId != supplyId);
+    product.supplies = product.supplies.filter(i => i.supplyId != supplyId);
     res.json(product);
   } else {
     res.status(404).json({ message: 'Product not found' });

@@ -609,7 +609,17 @@
             "type": "string"
           },
           {
-            "name": "sortOrder",
+            "name": "sortRequestDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sortDeliveryDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sortPrice",
             "in": "query",
             "type": "string"
           },
@@ -696,7 +706,17 @@
             "type": "string"
           },
           {
-            "name": "sortOrder",
+            "name": "sortRequestDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sortDeliveryDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sortPrice",
             "in": "query",
             "type": "string"
           },
@@ -1155,6 +1175,21 @@
         "summary": "Retrieves all supplies",
         "description": "",
         "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "authorization",
             "in": "header",
