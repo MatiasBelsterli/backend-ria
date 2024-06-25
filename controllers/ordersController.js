@@ -3,12 +3,12 @@ const Orders = require('../datamodels/models/order');
 const OrderStatus = require('../datamodels/enums/orderStatus');
 
 let orders = [
-    new Orders(1, [{ productId: 1, quantity: 2 }], '2023-05-01', 20.0, 3, OrderStatus.WAITING),
-    new Orders(2, [{ productId: 1, quantity: 2 }], '2023-05-02', 30.0, 3, OrderStatus.WAITING),
-    new Orders(3, [{ productId: 1, quantity: 2 }], '2023-05-03', 50.0, 3, OrderStatus.WAITING),
-    new Orders(4, [{ productId: 1, quantity: 2 }], '2023-05-04', 10.0, 3, OrderStatus.WAITING),
-    new Orders(5, [{ productId: 1, quantity: 2 }], '2023-05-05', 17.0, 3, OrderStatus.WAITING),
-    new Orders(6, [{ productId: 2, quantity: 1 }], '2024-06-01', 33.0, 2, OrderStatus.IN_PROCESS )
+    new Orders(1, [{ productId: 1, quantity: 2 }], '2024-05-01', 20.0, 3, OrderStatus.WAITING, '2024-05-10'),
+    new Orders(2, [{ productId: 1, quantity: 2 }], '2024-05-02', 30.0, 3, OrderStatus.WAITING, '2024-05-12'),
+    new Orders(3, [{ productId: 1, quantity: 2 }], '2024-05-03', 50.0, 3, OrderStatus.WAITING, '2024-05-17'),
+    new Orders(4, [{ productId: 1, quantity: 2 }], '2024-05-04', 10.0, 3, OrderStatus.WAITING, '2024-05-13'),
+    new Orders(5, [{ productId: 1, quantity: 2 }], '2024-05-05', 17.0, 3, OrderStatus.WAITING, '2024-05-15'),
+    new Orders(6, [{ productId: 2, quantity: 1 }], '2024-06-01', 33.0, 2, OrderStatus.IN_PROCESS, '2024-06-10')
 ];
 
 const orderOrders = (orders, sortOrder, sortField) => {
@@ -47,6 +47,11 @@ const orderOrders = (orders, sortOrder, sortField) => {
     });
 }
 
+const normalizeDate = date => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d;
+}
 
 exports.getOrders = (req, res) => {
     const requesterId = req.userId;
@@ -58,12 +63,25 @@ exports.getOrders = (req, res) => {
     const sortDeliveryDate = req.query.sortDeliveryDate || '';
     const sortPrice = req.query.sortPrice || '';
     const status = req.query.status || '';
+    const rangeFrom = req.query.rangeFrom || '';
+    const rangeTo = req.query.rangeTo || '';
 
     let filteredOrders;
     if (userRole === "ADMIN") {
         filteredOrders = orders;
     } else {
         filteredOrders = orders.filter(order => order.requesterId == requesterId);
+    }
+    if (rangeFrom) {
+        const fromDate = normalizeDate(new Date(rangeFrom) - 1);
+        if (!rangeTo)
+            filteredOrders = filteredOrders.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() === fromDate.getTime());
+        else
+            filteredOrders = filteredOrders.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() >= fromDate.getTime());
+    }
+    if (rangeTo) {
+        const toDate = normalizeDate(new Date(rangeTo) - 1);
+        filteredOrders = filteredOrders.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() <= toDate.getTime());
     }
 
     if (status) {
@@ -136,8 +154,17 @@ exports.getOrdersToBakers = (req, res) => {
     const sortRequestDate = req.query.sortRequestDate || '';
     const sortDeliveryDate = req.query.sortDeliveryDate || '';
     const sortPrice = req.query.sortPrice || '';
-
+    const rangeFrom = req.query.rangeFrom || '';
+    const rangeTo = req.query.rangeTo || '';
     let ordersToBakers = orders.filter(order => order.status === OrderStatus.WAITING);
+    if (rangeFrom) {
+        const fromDate = normalizeDate(new Date(rangeFrom) - 1);
+        ordersToBakers = ordersToBakers.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() >= fromDate.getTime());
+    }
+    if (rangeTo) {
+        const toDate = normalizeDate(new Date(rangeTo) - 1);
+        ordersToBakers = ordersToBakers.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() <= toDate.getTime());
+    }
     if (sortRequestDate) {
         ordersToBakers = orderOrders(ordersToBakers, sortRequestDate, 'requestDate');
     }
