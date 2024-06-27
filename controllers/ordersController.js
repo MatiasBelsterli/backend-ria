@@ -159,7 +159,10 @@ exports.getOrdersToBakers = (req, res) => {
     let ordersToBakers = orders.filter(order => order.status === OrderStatus.WAITING);
     if (rangeFrom) {
         const fromDate = normalizeDate(new Date(rangeFrom) - 1);
-        ordersToBakers = ordersToBakers.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() >= fromDate.getTime());
+        if (!rangeTo)
+            ordersToBakers = ordersToBakers.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() === fromDate.getTime());
+        else
+            ordersToBakers = ordersToBakers.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() >= fromDate.getTime());
     }
     if (rangeTo) {
         const toDate = normalizeDate(new Date(rangeTo) - 1);
@@ -219,7 +222,38 @@ exports.takeOrderToBaker = (req, res) => {
 
 exports.getOrdersByBaker = (req, res) => {
     const bakerId = req.userId;
-    const ordersByBaker = orders.filter(order => order.bakerId === bakerId);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const sortRequestDate = req.query.sortRequestDate || '';
+    const sortDeliveryDate = req.query.sortDeliveryDate || '';
+    const sortPrice = req.query.sortPrice || '';
+    const rangeFrom = req.query.rangeFrom || '';
+    const rangeTo = req.query.rangeTo || '';
+    const status = req.query.status || '';
+    let ordersByBaker = orders.filter(order => order.bakerId === bakerId);
+    if (rangeFrom) {
+        const fromDate = normalizeDate(new Date(rangeFrom) - 1);
+        if (!rangeTo)
+            ordersByBaker = ordersByBaker.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() === fromDate.getTime());
+        else
+            ordersByBaker = ordersByBaker.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() >= fromDate.getTime());
+    }
+    if (rangeTo) {
+        const toDate = normalizeDate(new Date(rangeTo) - 1);
+        ordersByBaker = ordersByBaker.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() <= toDate.getTime());
+    }
+    if (status) {
+        ordersByBaker = ordersByBaker.filter(order => order.status === status.toUpperCase());
+    }
+    if (sortRequestDate) {
+        ordersByBaker = orderOrders(ordersByBaker, sortRequestDate, 'requestDate');
+    }
+    if (sortDeliveryDate) {
+        ordersByBaker = orderOrders(ordersByBaker, sortDeliveryDate, 'deliveryDate');
+    }
+    if (sortPrice) {
+        ordersByBaker = orderOrders(ordersByBaker, sortPrice, 'totalPrice');
+    }
     const ordersWithProducts = ordersByBaker.map(order => {
         const completeProducts = order.products.map(p => {
             const product = allProducts.find(prod => prod.id === p.productId);
@@ -233,8 +267,15 @@ exports.getOrdersByBaker = (req, res) => {
             products: completeProducts
         };
     });
-
-    res.json(ordersWithProducts);
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const resultOrders = ordersWithProducts.slice(startIndex, endIndex)
+    res.json({
+        totalItems: ordersByBaker.length,
+        totalPages: Math.ceil(ordersByBaker.length / limit),
+        currentPage: page,
+        orders: resultOrders
+    });
 };
 
 exports.createOrder = (req, res) => {
