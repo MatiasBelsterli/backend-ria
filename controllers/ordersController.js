@@ -3,7 +3,7 @@ const Orders = require('../datamodels/models/order');
 const OrderStatus = require('../datamodels/enums/orderStatus');
 
 let orders = [
-    new Orders(1, [{ productId: 1, quantity: 2 }], '2024-05-01', 20.0, 3, OrderStatus.WAITING, '2024-05-10'),
+    new Orders(1, [{ productId: 1, quantity: 2 }, { productId: 2, quantity: 3 }], '2024-05-01', 20.0, 3, OrderStatus.WAITING, '2024-05-10'),
     new Orders(2, [{ productId: 1, quantity: 2 }], '2024-05-02', 30.0, 3, OrderStatus.WAITING, '2024-05-12'),
     new Orders(3, [{ productId: 1, quantity: 2 }], '2024-05-03', 50.0, 3, OrderStatus.WAITING, '2024-05-17'),
     new Orders(4, [{ productId: 1, quantity: 2 }], '2024-05-04', 10.0, 3, OrderStatus.WAITING, '2024-05-13'),
@@ -159,7 +159,10 @@ exports.getOrdersToBakers = (req, res) => {
     let ordersToBakers = orders.filter(order => order.status === OrderStatus.WAITING);
     if (rangeFrom) {
         const fromDate = normalizeDate(new Date(rangeFrom) - 1);
-        ordersToBakers = ordersToBakers.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() >= fromDate.getTime());
+        if (!rangeTo)
+            ordersToBakers = ordersToBakers.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() === fromDate.getTime());
+        else
+            ordersToBakers = ordersToBakers.filter(order => normalizeDate(new Date(order.deliveryDate)).getTime() >= fromDate.getTime());
     }
     if (rangeTo) {
         const toDate = normalizeDate(new Date(rangeTo) - 1);
