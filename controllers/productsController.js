@@ -63,10 +63,10 @@ exports.updateProduct = (req, res) => {
   const productIndex = products.findIndex(p => p.id == id);
   if (productIndex !== -1) {
     if (!image || image === '') {
-      products[productIndex] = new Product(id, name, description, products[productIndex].image, price, JSON.parse(supplies));
+      products[productIndex] = new Product(Number(id), name, description, products[productIndex].image, price, JSON.parse(supplies));
     } else {
       const image64 = image.buffer.toString('base64');
-      products[productIndex] = new Product(id, name, description, image64, price, JSON.parse(supplies));
+      products[productIndex] = new Product(Number(id), name, description, image64, price, JSON.parse(supplies));
     }
     res.json(products[productIndex]);
   } else {
