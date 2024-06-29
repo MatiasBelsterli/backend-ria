@@ -40,11 +40,15 @@ exports.getSupplyById = (req, res) => {
 };
 
 exports.createSupply = (req, res) => {
-    const { name, price } = req.body;
+    const { name, price, unit } = req.body;
+    if (!['Grams', 'Ml'].includes(unit)) {
+        return res.status(400).json({ message: 'Invalid unit type' });
+    }
+
     const newSupply = new Supply(
         supplies.length ? supplies[supplies.length - 1].id + 1 : 1,
         name,
-        'Grams',
+        unit,
         price
     );
     supplies.push(newSupply);
@@ -53,10 +57,13 @@ exports.createSupply = (req, res) => {
 
 exports.updateSupply = (req, res) => {
     const { id } = req.params;
-    const { name, price } = req.body;
+    const { name, price, unit } = req.body;
+    if (!['Grams', 'Ml'].includes(unit)) {
+        return res.status(400).json({ message: 'Invalid unit type' });
+    }
     const supplyIndex = supplies.findIndex(s => s.id == id);
     if (supplyIndex !== -1) {
-        supplies[supplyIndex] = new Supply(id, name, 'Grams', price);
+        supplies[supplyIndex] = new Supply(id, name, unit, price);
         res.json(supplies[supplyIndex]);
     } else {
         res.status(404).json({ message: 'Supply not found' });

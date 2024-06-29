@@ -629,6 +629,16 @@
             "type": "string"
           },
           {
+            "name": "rangeFrom",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "rangeTo",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "authorization",
             "in": "header",
             "type": "string"
@@ -721,6 +731,16 @@
             "type": "string"
           },
           {
+            "name": "rangeFrom",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "rangeTo",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "authorization",
             "in": "header",
             "type": "string"
@@ -798,6 +818,46 @@
         "summary": "Gets an order to bakers by ID",
         "description": "",
         "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sortRequestDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sortDeliveryDate",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sortPrice",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "rangeFrom",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "rangeTo",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "type": "string"
+          },
           {
             "name": "authorization",
             "in": "header",
@@ -1233,6 +1293,9 @@
           "201": {
             "description": "Created"
           },
+          "400": {
+            "description": "Bad Request"
+          },
           "401": {
             "description": "Unauthorized"
           },
@@ -1309,6 +1372,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
