@@ -12,7 +12,7 @@ exports.getProducts = (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   const searchTerm = req.query.searchTerm?.toLowerCase() || '';
 
-  let filteredProducts = products;
+  let filteredProducts = products.filter(p => !p.isDeleted);
 
   if (searchTerm) filteredProducts = filteredProducts.filter(p => p.name.toLowerCase().includes(searchTerm));
 
@@ -32,7 +32,7 @@ exports.getProducts = (req, res) => {
 exports.getProductById = (req, res) => {
   const { id } = req.params;
   const product = products.find(p => p.id == id);
-  if (product) {
+  if (product && !product.isDeleted) {
     res.json(product);
   } else {
     res.status(404).json({ message: 'Product not found' });
@@ -61,7 +61,7 @@ exports.updateProduct = (req, res) => {
   const { name, description, price, supplies } = req.body;
   const image = req.file;
   const productIndex = products.findIndex(p => p.id == id);
-  if (productIndex !== -1) {
+  if (productIndex !== -1 && !products[productIndex].isDeleted) {
     if (!image || image === '') {
       products[productIndex] = new Product(Number(id), name, description, products[productIndex].image, price, JSON.parse(supplies));
     } else {
@@ -76,9 +76,9 @@ exports.updateProduct = (req, res) => {
 
 exports.deleteProduct = (req, res) => {
   const { id } = req.params;
-  const productIndex = products.findIndex(p => p.id == id);
-  if (productIndex !== -1) {
-    const deletedProduct = products.splice(productIndex, 1);
+  const deletedProduct = products.find(p => p.id == id)
+  if (deletedProduct) {
+    deletedProduct.isDeleted = true;
     res.json(deletedProduct);
   } else {
     res.status(404).json({ message: 'Product not found' });
