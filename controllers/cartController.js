@@ -40,7 +40,11 @@ exports.updateProductQuantity = (req, res) => {
     const existingProduct = cart.find(item => item.productId == productId);
 
     if (existingProduct) {
-        existingProduct.quantity = quantity;
+        if (quantity <= 0) {
+            carts[userId] = carts[userId].filter(item => item.productId != productId);
+        } else {
+            existingProduct.quantity = quantity;
+        }
         res.json(existingProduct);
     } else {
         res.status(404).json({ message: 'Product not found in cart' });
