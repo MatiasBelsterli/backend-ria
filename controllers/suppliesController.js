@@ -2,7 +2,13 @@ const Supply = require('../datamodels/models/supply');
 
 let supplies = [
     new Supply(1, 'Flour', 'Grams', 0.05),
-    new Supply(2, 'Sugar', 'Grams', 0.03)
+    new Supply(2, 'Sugar', 'Grams', 0.03),
+    new Supply(3, 'Butter', 'Grams', 0.10),
+    new Supply(4, 'Milk', 'Ml', 0.02),
+    new Supply(5, 'Eggs', 'Units', 0.30),
+    new Supply(6, 'Salt', 'Grams', 0.01),
+    new Supply(7, 'Yeast', 'Grams', 0.08),
+    new Supply(8, 'Baking Powder', 'Grams', 0.04),
 ];
 
 exports.supplies = supplies;
