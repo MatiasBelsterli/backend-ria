@@ -1,4 +1,5 @@
 const Supply = require('../datamodels/models/supply');
+const { products: allProducts } = require('./productsController');
 
 let supplies = [
     new Supply(1, 'Flour', 'Grams', 0.05),
@@ -80,6 +81,13 @@ exports.deleteSupply = (req, res) => {
     const { id } = req.params;
     const supplyIndex = supplies.findIndex(s => s.id == id);
     if (supplyIndex !== -1) {
+        const hasSupply = allProducts.some(product =>
+            product.supplies.some(supply => supply.supplyId == supplies[supplyIndex].id)
+        );
+        if (hasSupply) {
+            res.status(400).json({ message: 'You cannot eliminate an supply if it is being used in a product.' })
+            return
+        }
         const deletedSupply = supplies.splice(supplyIndex, 1);
         res.json(deletedSupply);
     } else {
