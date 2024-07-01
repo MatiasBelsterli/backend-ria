@@ -1,8 +1,25 @@
+const fs = require('fs');
+const path = require('path');
 const Product = require('../datamodels/models/product');
 
+const imageToBase64 = (imagePath) => {
+  const image = fs.readFileSync(imagePath);
+  return image.toString('base64');
+};
+
+const imageFolder = path.join(__dirname, '../images');
+
 let products = [
-  new Product(1, 'Product 1', 'Description 1', null, 10.0, [{ supplyId: 1, quantity: 500 }]),
-  new Product(2, 'Product 2', 'Description 2', null, 20.0, [{ supplyId: 2, quantity: 200 }])
+  new Product(1, 'Bread', 'Freshly baked bread', imageToBase64(path.join(imageFolder, 'bread.jpg')), 1.50, [{ supplyId: 1, quantity: 500 }, { supplyId: 6, quantity: 5 }, { supplyId: 7, quantity: 10 }]),
+  new Product(2, 'Cake', 'Delicious chocolate cake', imageToBase64(path.join(imageFolder, 'cake.jpg')), 15.00, [{ supplyId: 1, quantity: 200 }, { supplyId: 2, quantity: 150 }, { supplyId: 3, quantity: 200 }, { supplyId: 5, quantity: 2 }]),
+  new Product(3, 'Croissant', 'Buttery croissant', imageToBase64(path.join(imageFolder, 'croissant.jpg')), 2.00, [{ supplyId: 1, quantity: 100 }, { supplyId: 3, quantity: 50 }, { supplyId: 5, quantity: 1 }]),
+  new Product(4, 'Muffin', 'Blueberry muffin', imageToBase64(path.join(imageFolder, 'muffin.jpg')), 2.50, [{ supplyId: 1, quantity: 150 }, { supplyId: 2, quantity: 50 }, { supplyId: 5, quantity: 1 }, { supplyId: 8, quantity: 5 }]),
+  new Product(5, 'Donut', 'Glazed donut', imageToBase64(path.join(imageFolder, 'donut.jpg')), 1.20, [{ supplyId: 1, quantity: 100 }, { supplyId: 2, quantity: 100 }, { supplyId: 3, quantity: 50 }]),
+  new Product(6, 'Bagel', 'Sesame bagel', imageToBase64(path.join(imageFolder, 'bagel.jpg')), 1.00, [{ supplyId: 1, quantity: 100 }, { supplyId: 6, quantity: 5 }, { supplyId: 7, quantity: 5 }]),
+  new Product(7, 'Cupcake', 'Vanilla cupcake with frosting', imageToBase64(path.join(imageFolder, 'cupcake.jpg')), 3.00, [{ supplyId: 1, quantity: 100 }, { supplyId: 2, quantity: 50 }, { supplyId: 5, quantity: 1 }, { supplyId: 8, quantity: 5 }]),
+  new Product(8, 'Pie', 'Apple pie', imageToBase64(path.join(imageFolder, 'pie.jpg')), 12.00, [{ supplyId: 1, quantity: 300 }, { supplyId: 2, quantity: 100 }, { supplyId: 4, quantity: 100 }, { supplyId: 5, quantity: 2 }]),
+  new Product(9, 'Brownie', 'Chocolate brownie', imageToBase64(path.join(imageFolder, 'brownie.jpg')), 1.80, [{ supplyId: 1, quantity: 100 }, { supplyId: 2, quantity: 50 }, { supplyId: 3, quantity: 50 }, { supplyId: 5, quantity: 1 }]),
+  new Product(10, 'Scone', 'Classic scone', imageToBase64(path.join(imageFolder, 'scone.jpg')), 2.00, [{ supplyId: 1, quantity: 150 }, { supplyId: 3, quantity: 50 }, { supplyId: 5, quantity: 1 }, { supplyId: 8, quantity: 5 }])
 ];
 
 exports.products = products;
